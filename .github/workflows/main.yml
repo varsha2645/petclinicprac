@@ -52,6 +52,7 @@ jobs:
           -Dsonar.projectKey=Petclinic \
           -Dsonar.java.binaries=. \
           -Dsonar.host.url=http://4.247.31.109:9000/
+          -Dsonar.login=${{ secrets.SONARQUBE_TOKEN }} 
     - name: Wait for Quality Gate to be ready
       run: |
         echo "Waiting for SonarQube Quality Gate result..."
