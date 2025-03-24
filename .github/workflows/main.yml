@@ -78,6 +78,9 @@ jobs:
         login-server: gitpracacr.azurecr.io
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: Verify Docker login
+      run: |
+        docker info  # Verify that the login was successful
     - run: |
         sudo docker build . -t gitpracacr.azurecr.io/petclinic:${{ github.sha }}
         sudo docker push gitpracacr.azurecr.io/petclinic:${{ github.sha }}
