@@ -82,8 +82,8 @@ jobs:
       run: |
         docker info  # Verify that the login was successful
     - run: |
-        sudo docker build . -t gitpracacr.azurecr.io/petclinic:latest
-        sudo docker push gitpracacr.azurecr.io/petclinic:latest
+        sudo docker build . -t gitpracacr.azurecr.io/petclinic:${{ github.sha }} 
+        sudo docker push gitpracacr.azurecr.io/petclinic:${{ github.sha }} 
     # - name: Run Trivy security scan
     #   run: |
     #     docker pull pet/pet-clinic123:latest
