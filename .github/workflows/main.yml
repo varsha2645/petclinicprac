@@ -65,18 +65,19 @@ jobs:
         RESULT=$(echo $response | jq -r '.projectStatus.status')
         echo "Quality Gate status: $RESULT"
         if [ "$RESULT" != "OK" ]; then
-        echo "Quality Gate failed!"
-        exit 1
+          echo "Quality Gate failed!"
+          exit 1
         else
-        echo "Quality Gate passed!"
+          echo "Quality Gate passed!"
         fi
     - name: Build and package application
       run: mvn clean install
-    - uses: azure/docker-login@v2
-        with:
-          login-server: gitpracacr.azurecr.io
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }  
+    - name: Docker login
+      uses: azure/docker-login@v2
+      with:
+        login-server: gitpracacr.azurecr.io
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
     - run: |
         sudo docker build . -t gitpracacr.azurecr.io/petclinic:${{ github.sha }}
         sudo docker push gitpracacr.azurecr.io/petclinic:${{ github.sha }}
@@ -84,5 +85,3 @@ jobs:
     #   run: |
     #     docker pull pet/pet-clinic123:latest
     #     trivy image pet/pet-clinic123:latest
-
-
