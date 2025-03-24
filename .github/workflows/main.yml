@@ -72,23 +72,21 @@ jobs:
         fi
     - name: Build and package application
       run: mvn clean install
-    - name: Install OWASP Dependency-Check
+    - name: Download OWASP Dependency Check
       run: |
-        wget https://github.com/jeremylong/DependencyCheck/releases/download/v6.3.2/dependency-check-6.3.2-release.zip
-        unzip dependency-check-6.3.2-release.zip
-        sudo mv dependency-check-6.3.2 /opt/dependency-check
-
-    # Run OWASP Dependency-Check Scan
-    - name: Run OWASP Dependency-Check
+        VERSION=$(curl -s https://jeremylong.github.io/DependencyCheck/current.txt)
+        curl -sL "https://github.com/jeremylong/DependencyCheck/releases/download/v$VERSION/dependency-check-$VERSION-release.zip" --output dependency-check.zip
+        unzip dependency-check.zip
+    - name: Run Dependency Check
       run: |
-        /opt/dependency-check/bin/dependency-check.sh --scan ./ --format HTML --out ./dependency-check-report
+        ./dependency-check/bin/dependency-check.sh --out report.html --scan .
+        rm -rf dependency-check*
 
-    # Upload the Dependency Check report to GitHub Actions (optional for review)
-    - name: Upload Dependency Check Report
-      uses: actions/upload-artifact@v4
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v2
       with:
-        name: dependency-check-report
-        path: ./dependency-check-report
+        name: artifacts
+        path: report.html
 
     # Optionally, you can publish it as an HTML file in the workflow output
     - name: Publish Dependency Check Report (HTML)
