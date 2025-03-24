@@ -43,7 +43,7 @@ jobs:
 
     - name: SonarQube Analysis
       env:
-        SONARQUBE_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
+        SONARQUBE_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
         curl -sSLo sonar-scanner-cli.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
         unzip sonar-scanner-cli.zip
@@ -52,7 +52,7 @@ jobs:
           -Dsonar.projectKey=Petclinic \
           -Dsonar.java.binaries=. \
           -Dsonar.host.url=http://4.247.31.109:9000/
-          -Dsonar.login=${{ secrets.SONARQUBE_TOKEN }} 
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }} 
     - name: Wait for Quality Gate to be ready
       run: |
         echo "Waiting for SonarQube Quality Gate result..."
@@ -60,7 +60,7 @@ jobs:
 
     - name: Check SonarQube Quality Gate status
       run: |
-        RESULT=$(curl -s -u ${{ secrets.SONARQUBE_TOKEN }} "http://4.247.31.109:9000//api/qualitygates/project_status?projectKey=Petclinic" | jq -r '.projectStatus.status')
+        RESULT=$(curl -s -u ${{ secrets.SONAR_TOKEN }} "http://4.247.31.109:9000//api/qualitygates/project_status?projectKey=Petclinic" | jq -r '.projectStatus.status')
         echo "Quality Gate status: $RESULT"
         if [ "$RESULT" != "OK" ]; then
           echo "Quality Gate failed!"
