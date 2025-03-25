@@ -1,0 +1,15 @@
+# .github/workflows/trivy-scan.yml
+name: Trivy Security Scan
+
+on:
+  workflow_call:
+
+jobs:
+  trivy-scan:
+    runs-on: [self-hosted, linux, x64]
+
+    steps:
+    - name: Run Trivy security scan
+      run: |
+        docker pull gitpracacr.azurecr.io/petclinic:${{ github.sha }}  # Ensure the image exists
+        trivy image --exit-code 0 --severity HIGH,CRITICAL --no-progress gitpracacr.azurecr.io/petclinic:${{ github.sha }}
