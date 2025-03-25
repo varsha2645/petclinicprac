@@ -131,9 +131,9 @@ jobs:
     - run: |
         docker build . -t gitpracacr.azurecr.io/petclinic:${{ github.sha }} 
         docker push gitpracacr.azurecr.io/petclinic:${{ github.sha }} 
-    - name: Install Trivy
-      run: |
-        curl -sfL https://github.com/aquasecurity/trivy/releases/download/v0.38.3/trivy_0.38.3_Linux-64bit.tar.gz | tar -xz -C /usr/local/bin
+    # - name: Install Trivy
+    #   run: |
+    #     curl -sfL https://github.com/aquasecurity/trivy/releases/download/v0.38.3/trivy_0.38.3_Linux-64bit.tar.gz | tar -xz -C /usr/local/bin
 
     - name: Run Trivy security scan
       run: |
