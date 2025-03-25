@@ -40,18 +40,12 @@ jobs:
         pip install detect-secrets
         detect-secrets --version
 
-        
-    - name: Check directory permissions
-      run: |
-        ls -ld /home/githubvm3/actions-runner1/_work/petclinicprac/petclinicprac
-
-
     # 5. Run detect-secrets scan to create baseline if it doesn't exist
     - name: Run detect-secrets scan to create baseline
       working-directory: /home/githubvm3/actions-runner1/_work/petclinicprac/petclinicprac
       run: |
         source venv/bin/activate
-        detect-secrets scan --baseline /home/githubvm3/actions-runner1/_work/petclinicprac/petclinicprac/.secrets-baseline --force
+        detect-secrets scan --all-files --baseline .secrets.baseline
         # echo "Current working directory: $(pwd)"
         # if [ ! -f .secrets-baseline ]; then
         # echo "No baseline file found, running initial scan to create it..."
