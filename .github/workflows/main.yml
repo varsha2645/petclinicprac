@@ -44,21 +44,19 @@ jobs:
       run: |
         source venv/bin/activate
         detect-secrets scan --all-files > .secrets.baseline
-        detect-secrets scan --all-files --baseline .secrets.baseline 
+        detect-secrets scan --all-files --exclude-files 'venv/*' > .secrets.baseline
         
     - name: Run detect-secrets scan to check for secrets
       run: |
         source venv/bin/activate
-        result=$(detect-secrets scan --all-files --baseline .secrets.baseline || true)
-        if [[ "$result" == *"Secret detected"* ]]; then
-          echo "Secrets found in the code:"
-          echo "$result"
-          exit 1  # Fail the pipeline if secrets are found
+        detect-secrets scan --all-files --exclude-files 'venv/*' > .secrets.baseline
+        if jq '.results | length > 0' .secrets.baseline; then
+        echo "Secrets found in the code:"
+        jq '.results | to_entries[] | .value[] | "\(.filename): Line \(.line_number) - \(.type)"' .secrets.baseline
+        exit 1  # Fail the script (and pipeline) if secrets are found
         else
-          echo "No secrets detected, pipeline passes!"
+        echo "No secrets detected, pipeline passes!"
         fi
-
-
 
     - name: Compile project
       run: mvn clean compile
