@@ -2,7 +2,10 @@
 name: Trivy Security Scan
 
 on:
-  workflow_call:
+  workflow_run:
+    workflows: ["CI-CD Pipeline"]   # This references the main pipeline workflow
+    types:
+      - completed
 
 jobs:
   trivy-scan:
