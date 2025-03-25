@@ -31,37 +31,42 @@ jobs:
         java-distribution: temurin
         maven-version: 3.8.1
 
-    # 1. Install detect-secrets
     - name: Install detect-secrets
       run: |
-        python3 -m pip install --upgrade pip
+        python3 -m venv venv
+        source venv/bin/activate
+        pip install --upgrade pip
         pip install detect-secrets
+
+    # 5. Run detect-secrets scan to create baseline if it doesn't exist
     - name: Run detect-secrets scan to create baseline
       run: |
+        source venv/bin/activate
         if [ ! -f .secrets-baseline ]; then
-        echo "No baseline file found, running initial scan to create it..."
-        detect-secrets scan --all-files --baseline .secrets-baseline
+          echo "No baseline file found, running initial scan to create it..."
+          detect-secrets scan --all-files --baseline .secrets-baseline
         else
-        echo "Baseline file found, skipping initial scan."
+          echo "Baseline file found, skipping initial scan."
         fi
 
-
-    # 3. Upload .secrets-baseline (optional, so you can store the baseline)
+    # 6. Upload .secrets-baseline (optional, so you can store the baseline)
     - name: Upload .secrets-baseline
       uses: actions/upload-artifact@v4
       with:
         name: secrets-baseline
         path: .secrets-baseline
 
-    # 4. Optional: Check for secrets in the repository after the scan
+    # 7. Check for secrets in the repository after the scan
     - name: Check for detected secrets
       run: |
+        source venv/bin/activate
         if [ -f .secrets-baseline ]; then
           echo "Secrets baseline file exists."
         else
           echo "No baseline file found."
           exit 1
         fi
+
 
     - name: Compile project
       run: mvn clean compile
