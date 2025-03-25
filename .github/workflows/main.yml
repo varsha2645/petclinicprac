@@ -37,6 +37,12 @@ jobs:
         python -m pip install --upgrade pip
         pip install detect-secrets
 
+    - name: Initialize .secrets-baseline (if not present)
+      run: |
+        if [ ! -f .secrets-baseline ]; then
+          detect-secrets init
+        fi
+
     # 2. Run detect-secrets scan
     - name: Run detect-secrets scan
       run: |
