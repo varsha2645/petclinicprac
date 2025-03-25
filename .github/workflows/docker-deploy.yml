@@ -9,6 +9,8 @@ jobs:
     runs-on: [self-hosted, linux, x64]
 
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
     - name: Docker login
       uses: azure/docker-login@v2
       with:
