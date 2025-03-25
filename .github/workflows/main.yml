@@ -33,7 +33,6 @@ jobs:
 
     - name: Install detect-secrets inside working directory
       run: |
-        cd /home/githubvm3/actions-runner1/_work/petclinicprac/petclinicprac
         python3 -m venv venv
         source venv/bin/activate
         python3 -m pip install --upgrade pip
@@ -42,37 +41,45 @@ jobs:
 
     # 5. Run detect-secrets scan to create baseline if it doesn't exist
     - name: Run detect-secrets scan to create baseline
-      working-directory: /home/githubvm3/actions-runner1/_work/petclinicprac/petclinicprac
       run: |
         source venv/bin/activate
         detect-secrets scan > .secrets.baseline
         detect-secrets scan --all-files --baseline .secrets.baseline
-        # echo "Current working directory: $(pwd)"
-        # if [ ! -f .secrets-baseline ]; then
-        # echo "No baseline file found, running initial scan to create it..."
-        # detect-secrets scan --all-files --baseline ./secrets/.secrets-baseline  # Specifying a relative path
-        # else
-        # echo "Baseline file found, skipping initial scan."
-        # fi
+        
+     jobs:
+  detect-secrets:
+    runs-on: ubuntu-latest
 
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-    # 6. Upload .secrets-baseline (optional, so you can store the baseline)
-    - name: Upload .secrets-baseline
-      uses: actions/upload-artifact@v4
-      with:
-        name: secrets-baseline
-        path: .secrets-baseline
+    - name: Install detect-secrets inside working directory
+      run: |
+        python3 -m venv venv
+        source venv/bin/activate
+        python3 -m pip install --upgrade pip
+        pip install detect-secrets
+        detect-secrets --version
 
-    # 7. Check for secrets in the repository after the scan
-    - name: Check for detected secrets
+    - name: Run detect-secrets scan to create baseline
       run: |
         source venv/bin/activate
-        if [ -f .secrets-baseline ]; then
-          echo "Secrets baseline file exists."
+        detect-secrets scan > .secrets.baseline
+        detect-secrets scan --all-files --baseline .secrets.baseline 
+
+    - name: Run detect-secrets scan to check for secrets
+      run: |
+        source venv/bin/activate
+        result=$(detect-secrets scan --all-files --baseline .secrets.baseline || true)
+        if [[ "$result" == *"Secret detected"* ]]; then
+          echo "Secrets found in the code:"
+          echo "$result"
+          exit 1  # Fail the pipeline if secrets are found
         else
-          echo "No baseline file found."
-          exit 1
+          echo "No secrets detected, pipeline passes!"
         fi
+
 
 
     - name: Compile project
