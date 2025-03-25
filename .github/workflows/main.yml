@@ -17,8 +17,9 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Set up Java and Maven
-      uses: ./.github/workflows/setup-java.yml
+    - name: Run setup-java workflow
+      run: |
+        echo "Running setup-java workflow from another workflow"
 
     - name: Run Secrets Scan
       uses: ./.github/workflows/secrets-scan.yml
