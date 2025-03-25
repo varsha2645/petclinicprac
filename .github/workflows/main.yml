@@ -26,9 +26,6 @@ jobs:
     - name: SonarQube Analysis
       uses: ./.github/workflows/sonar-scanner.yml
 
-    - name: Build and package application
-      run: mvn clean install
-
     - name: Run Dependency Check
       uses: ./.github/workflows/dependency-check.yml
 
