@@ -44,7 +44,7 @@ jobs:
       run: |
         source venv/bin/activate
         detect-secrets scan > .secrets.baseline
-        detect-secrets scan --all-files --baseline .secrets.baseline
+        detect-secrets scan --all-files --baseline .secrets.baseline --update
         
     - name: Run detect-secrets scan to check for secrets
       run: |
