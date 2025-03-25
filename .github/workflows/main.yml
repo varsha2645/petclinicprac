@@ -42,12 +42,14 @@ jobs:
     - name: Run detect-secrets scan to create baseline
       run: |
         source venv/bin/activate
+        echo "Current working directory: $(pwd)"
         if [ ! -f .secrets-baseline ]; then
-          echo "No baseline file found, running initial scan to create it..."
-          detect-secrets scan --all-files --baseline .secrets-baseline
+        echo "No baseline file found, running initial scan to create it..."
+        detect-secrets scan --all-files --baseline ./secrets/.secrets-baseline  # Specifying a relative path
         else
-          echo "Baseline file found, skipping initial scan."
+        echo "Baseline file found, skipping initial scan."
         fi
+
 
     # 6. Upload .secrets-baseline (optional, so you can store the baseline)
     - name: Upload .secrets-baseline
