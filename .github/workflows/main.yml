@@ -117,7 +117,7 @@ jobs:
     # - name: Publish Dependency Check Report (HTML)
     #   run: |
     #     echo "Dependency Check HTML Report:"
-    #     cat ./dependency-check-report/*.html
+    #     cat ./dependency-check-report/*.html changed
     - name: Docker login
       uses: azure/docker-login@v2
       with:
