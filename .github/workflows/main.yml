@@ -35,20 +35,23 @@ jobs:
       run: |
         python3 -m venv venv
         source venv/bin/activate
-        pip install --upgrade pip
-        pip install detect-secrets
+        sudo apt install python3 python3-pip
+        pip3 install detect-secrets
+        #pip install --upgrade pip
+        #pip install detect-secrets
 
     # 5. Run detect-secrets scan to create baseline if it doesn't exist
     - name: Run detect-secrets scan to create baseline
       run: |
-        source venv/bin/activate
-        echo "Current working directory: $(pwd)"
-        if [ ! -f .secrets-baseline ]; then
-        echo "No baseline file found, running initial scan to create it..."
-        detect-secrets scan --all-files --baseline ./secrets/.secrets-baseline  # Specifying a relative path
-        else
-        echo "Baseline file found, skipping initial scan."
-        fi
+        detect-secrets --init
+        # source venv/bin/activate
+        # echo "Current working directory: $(pwd)"
+        # if [ ! -f .secrets-baseline ]; then
+        # echo "No baseline file found, running initial scan to create it..."
+        # detect-secrets scan --all-files --baseline ./secrets/.secrets-baseline  # Specifying a relative path
+        # else
+        # echo "Baseline file found, skipping initial scan."
+        # fi
 
 
     # 6. Upload .secrets-baseline (optional, so you can store the baseline)
