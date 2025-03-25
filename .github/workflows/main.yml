@@ -49,6 +49,7 @@ jobs:
     - name: Run detect-secrets scan to check for secrets
       run: |
         source venv/bin/activate
+        detect-secrets scan --all-files > .secrets.baseline
         detect-secrets scan --all-files --exclude-files 'venv/*' > .secrets.baseline
         if jq '.results | length > 0' .secrets.baseline; then
         echo "Secrets found in the code:"
