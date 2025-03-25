@@ -43,8 +43,8 @@ jobs:
     - name: Run detect-secrets scan to create baseline
       run: |
         source venv/bin/activate
-        detect-secrets scan > .secrets.baseline
-        detect-secrets scan --all-files --baseline .secrets.baseline --update
+        detect-secrets scan --all-files > .secrets.baseline
+        detect-secrets scan --all-files --baseline .secrets.baseline 
         
     - name: Run detect-secrets scan to check for secrets
       run: |
