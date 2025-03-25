@@ -42,6 +42,7 @@ jobs:
 
     # 5. Run detect-secrets scan to create baseline if it doesn't exist
     - name: Run detect-secrets scan to create baseline
+      working-directory: /home/githubvm3/actions-runner1/_work/petclinicprac/petclinicprac
       run: |
         source venv/bin/activate
         detect-secrets scan --baseline .secrets-baseline --force
