@@ -46,28 +46,6 @@ jobs:
         detect-secrets scan > .secrets.baseline
         detect-secrets scan --all-files --baseline .secrets.baseline
         
-     jobs:
-  detect-secrets:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-
-    - name: Install detect-secrets inside working directory
-      run: |
-        python3 -m venv venv
-        source venv/bin/activate
-        python3 -m pip install --upgrade pip
-        pip install detect-secrets
-        detect-secrets --version
-
-    - name: Run detect-secrets scan to create baseline
-      run: |
-        source venv/bin/activate
-        detect-secrets scan > .secrets.baseline
-        detect-secrets scan --all-files --baseline .secrets.baseline 
-
     - name: Run detect-secrets scan to check for secrets
       run: |
         source venv/bin/activate
