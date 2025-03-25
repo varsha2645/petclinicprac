@@ -12,7 +12,7 @@ jobs:
     - name: Docker login
       uses: azure/docker-login@v2
       with:
-        login-server: gitpracacr.azurecr.io
+        login-server: ${{ secrets.DOCKERHUB_REGISTRYURL }}
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
@@ -20,6 +20,8 @@ jobs:
       run: |
         docker info  # Verify that the login was successful
 
-    - run: |
-        docker build . -t gitpracacr.azurecr.io/petclinic:${{ github.sha }} 
-        docker push gitpracacr.azurecr.io/petclinic:${{ github.sha }} 
+    - name: Build and Push Docker Image
+      run: |
+        IMAGE_NAME="${{ secrets.DOCKERHUB_REGISTRYURL }}/${{ secrets.DOCKERHUB_APPNAME }}:${{ github.sha }}-${{ github.run_number }}"
+        docker build -t $IMAGE_NAME .
+        docker push $IMAGE_NAME
