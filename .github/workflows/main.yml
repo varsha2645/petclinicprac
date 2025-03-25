@@ -43,8 +43,8 @@ jobs:
     # 5. Run detect-secrets scan to create baseline if it doesn't exist
     - name: Run detect-secrets scan to create baseline
       run: |
-        detect-secrets --init
-        # source venv/bin/activate
+        source venv/bin/activate
+        detect-secrets scan > .secrets.baseline
         # echo "Current working directory: $(pwd)"
         # if [ ! -f .secrets-baseline ]; then
         # echo "No baseline file found, running initial scan to create it..."
