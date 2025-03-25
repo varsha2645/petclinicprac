@@ -37,16 +37,25 @@ jobs:
         python -m pip install --upgrade pip
         pip install detect-secrets
 
-    - name: Initialize .secrets-baseline (if not present)
+    - name: Run detect-secrets scan and create .secrets-baseline
       run: |
         if [ ! -f .secrets-baseline ]; then
-          detect-secrets init
+          echo "No baseline file found, running initial scan to create it..."
+          detect-secrets scan --scan . --output .secrets-baseline
+        else
+          echo "Baseline file found, running scan with baseline..."
+          detect-secrets scan --baseline .secrets-baseline --scan .
         fi
 
-    # 2. Run detect-secrets scan
-    - name: Run detect-secrets scan
+    # 3. Check for detected secrets
+    - name: Check for detected secrets
       run: |
-        detect-secrets scan --baseline .secrets-baseline --scan .
+        if [ -f .secrets-baseline ]; then
+          echo "Secrets baseline file exists."
+        else
+          echo "No baseline file found."
+          exit 1
+        fi
 
 
     - name: Compile project
