@@ -31,15 +31,15 @@ jobs:
         java-distribution: temurin
         maven-version: 3.8.1
 
-    - name: Install detect-secrets
+    - name: Install detect-secrets inside working directory
       run: |
+        cd /home/githubvm3/actions-runner1/_work/petclinicprac/petclinicprac
         python3 -m venv venv
         source venv/bin/activate
-        sudo apt install python3 python3-pip
-        pip3 install detect-secrets
+        python3 -m pip install --upgrade pip
+        pip install detect-secrets
         detect-secrets --version
-        #pip install --upgrade pip
-        #pip install detect-secrets
+
         
     - name: Check directory permissions
       run: |
