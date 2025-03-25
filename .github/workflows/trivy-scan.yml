@@ -9,6 +9,8 @@ jobs:
     runs-on: [self-hosted, linux, x64]
 
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
     - name: Run Trivy security scan
       run: |
         IMAGE_NAME="${{ secrets.DOCKERHUB_REGISTRYURL }}/${{ secrets.DOCKERHUB_APPNAME }}:${{ github.sha }}-${{ github.run_number }}"
