@@ -11,5 +11,7 @@ jobs:
     steps:
     - name: Run Trivy security scan
       run: |
-        docker pull gitpracacr.azurecr.io/petclinic:${{ github.sha }}  # Ensure the image exists
-        trivy image --exit-code 0 --severity HIGH,CRITICAL --no-progress gitpracacr.azurecr.io/petclinic:${{ github.sha }}
+        IMAGE_NAME="${{ secrets.DOCKERHUB_REGISTRYURL }}/${{ secrets.DOCKERHUB_APPNAME }}:${{ github.sha }}-${{ github.run_number }}"
+        docker pull $IMAGE_NAME
+        trivy image --exit-code 0 --severity HIGH,CRITICAL --no-progress $IMAGE_NAME
+        #make it 1 to make sure the pipeline fails
