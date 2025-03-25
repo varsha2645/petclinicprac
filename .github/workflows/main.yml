@@ -45,6 +45,7 @@ jobs:
       working-directory: /home/githubvm3/actions-runner1/_work/petclinicprac/petclinicprac
       run: |
         source venv/bin/activate
+        detect-secrets scan > .secrets.baseline
         detect-secrets scan --all-files --baseline .secrets.baseline
         # echo "Current working directory: $(pwd)"
         # if [ ! -f .secrets-baseline ]; then
