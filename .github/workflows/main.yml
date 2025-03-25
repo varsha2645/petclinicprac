@@ -85,7 +85,7 @@ jobs:
 
     - name: Check SonarQube Quality Gate status
       run: |
-        response=$(curl -s -u ${{ secrets.SONAR_TOKEN }} "http://4.247.31.109:9000/api/qualitygates/project_status?projectKey=Petclinic")
+        response=$(curl -s --max-time 400 -u ${{ secrets.SONAR_TOKEN }} "http://4.247.31.109:9000/api/qualitygates/project_status?projectKey=Petclinic")
         echo "API Response: $response"
         RESULT=$(echo $response | jq -r '.projectStatus.status')
         echo "Quality Gate status: $RESULT"
