@@ -15,13 +15,17 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
     - name: SonarQube Analysis
-      uses: SonarSource/sonarcloud-github-action@v1
-      with:
-        projectKey: ${{ secrets.SONAR_PROJECT_KEY }}  # Use secret for project key
-        projectName: ${{ secrets.SONAR_PROJECT_NAME }}  # Use secret for project name
       env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  # Use secret for SonarQube token
-        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        SONARQUBE_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run: |
+        curl -sSLo sonar-scanner-cli.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
+        unzip sonar-scanner-cli.zip
+        ./sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner \
+          -Dsonar.projectName=Petclinic \
+          -Dsonar.projectKey=Petclinic \
+          -Dsonar.java.binaries=. \
+          -Dsonar.host.url=http://4.247.31.109:9000 \
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
     - name: Wait for Quality Gate to be ready
       run: |
