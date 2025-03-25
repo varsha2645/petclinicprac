@@ -78,10 +78,10 @@ jobs:
           -Dsonar.java.binaries=. \
           -Dsonar.host.url=http://4.247.31.109:9000 \
           -Dsonar.login=${{ secrets.SONAR_TOKEN }}
-    - name: Wait for Quality Gate to be ready
-      run: |
-        echo "Waiting for SonarQube Quality Gate result..."
-        sleep 15 # Wait for 15 seconds for the analysis to complete
+    # - name: Wait for Quality Gate to be ready
+    #   run: |
+    #     echo "Waiting for SonarQube Quality Gate result..."
+    #     sleep 15 # Wait for 15 seconds for the analysis to complete
 
     - name: Check SonarQube Quality Gate status
       run: |
