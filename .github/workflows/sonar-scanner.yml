@@ -1,0 +1,39 @@
+# .github/workflows/sonar-scanner.yml
+name: SonarQube Analysis
+
+on:
+  workflow_call:
+
+jobs:
+  sonar-analysis:
+    runs-on: [self-hosted, linux, x64]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    - name: SonarQube Analysis
+      uses: SonarSource/sonarcloud-github-action@v1
+      with:
+        projectKey: ${{ secrets.SONAR_PROJECT_KEY }}  # Use secret for project key
+        projectName: ${{ secrets.SONAR_PROJECT_NAME }}  # Use secret for project name
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  # Use secret for SonarQube token
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+    - name: Wait for Quality Gate to be ready
+      run: |
+        echo "Waiting for SonarQube Quality Gate result..."
+        sleep 15 # Wait for 15 seconds for the analysis to complete
+
+    - name: Check SonarQube Quality Gate status
+      run: |
+        response=$(curl -s --max-time 400 -u ${{ secrets.SONAR_TOKEN }} "${{ secrets.SONAR_HOST_URL }}/api/qualitygates/project_status?projectKey=${{ secrets.SONAR_PROJECT_KEY }}")
+        echo "API Response: $response"
+        RESULT=$(echo $response | jq -r '.projectStatus.status')
+        echo "Quality Gate status: $RESULT"
+        if [ "$RESULT" != "OK" ]; then
+          echo "Quality Gate failed, but continuing the pipeline."
+          exit 0  # This ensures the pipeline does not fail, even if the quality gate fails
+        else
+          echo "Quality Gate passed!"
+        fi
