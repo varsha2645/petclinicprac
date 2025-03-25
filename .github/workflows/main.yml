@@ -36,24 +36,15 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install detect-secrets
-    - name: Debug .secrets-baseline file status
-      run: |
-        if [ -f .secrets-baseline ]; then
-        echo ".secrets-baseline file found."
-        else
-        echo ".secrets-baseline file not found."
-        fi
-
-
-    - name: Run detect-secrets scan
+    - name: Run detect-secrets scan to create baseline
       run: |
         if [ ! -f .secrets-baseline ]; then
-          echo "No baseline file found, running initial scan to create it..."
-          detect-secrets scan --all-files --baseline .secrets-baseline
+        echo "No baseline file found, running initial scan to create it..."
+        detect-secrets scan --all-files --baseline .secrets-baseline
         else
-          echo "Baseline file found, running scan with baseline..."
-          detect-secrets scan --baseline .secrets-baseline --all-files
+        echo "Baseline file found, skipping initial scan."
         fi
+
 
     # 3. Upload .secrets-baseline (optional, so you can store the baseline)
     - name: Upload .secrets-baseline
