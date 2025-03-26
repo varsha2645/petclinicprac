@@ -21,15 +21,15 @@ jobs:
       run: |
         echo "Triggering setup-java workflow..."
 
-    # SonarQube Analysis Workflow Trigger
-    - name: Trigger sonar-scanner workflow
-      run: |
-        echo "Triggering SonarQube Analysis..."
+    # # SonarQube Analysis Workflow Trigger
+    # - name: Trigger sonar-scanner workflow
+    #   run: |
+    #     echo "Triggering SonarQube Analysis..."
 
-    # Dependency Check Workflow Trigger
-    - name: Trigger dependency-check workflow
-      run: |
-        echo "Triggering dependency check workflow..."
+    # # Dependency Check Workflow Trigger
+    # - name: Trigger dependency-check workflow
+    #   run: |
+    #     echo "Triggering dependency check workflow..."
 
     # Docker Build and Push Workflow Trigger
     - name: Trigger Docker build and push workflow
