@@ -16,7 +16,6 @@ jobs:
       uses: actions/checkout@v4
     - name: Run Trivy security scan
       run: |
-        IMAGE_NAME="${{ secrets.DOCKERHUB_REGISTRYURL }}/${{ secrets.DOCKERHUB_APPNAME }}:${{ github.sha }}-${{ github.run_number }}"
-        docker pull $IMAGE_NAME
-        trivy image --exit-code 0 --severity HIGH,CRITICAL --no-progress $IMAGE_NAME
+        docker pull ${{ secrets.DOCKERHUB_REGISTRYURL }}/${{ secrets.DOCKERHUB_APPNAME }}:${{ github.run_number }}
+        trivy image --exit-code 0 --severity HIGH,CRITICAL --no-progress ${{ secrets.DOCKERHUB_REGISTRYURL }}/${{ secrets.DOCKERHUB_APPNAME }}:${{ github.run_number }}
         #make it 1 to make sure the pipeline fails
