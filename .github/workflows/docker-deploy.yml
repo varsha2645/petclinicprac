@@ -28,5 +28,5 @@ jobs:
     - name: Build and Push Docker Image
       run: |
         IMAGE_NAME="${{ secrets.DOCKERHUB_REGISTRYURL }}/${{ secrets.DOCKERHUB_APPNAME }}:${{ github.run_number }}"
-        docker buildx build -t $IMAGE_NAME .
-        docker push $IMAGE_NAME
+        echo "Building Docker image: $IMAGE_NAME"
+        docker buildx build -t $IMAGE_NAME . --push
