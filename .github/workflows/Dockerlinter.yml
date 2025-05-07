@@ -4,13 +4,17 @@ on:
   workflow_dispatch:
     inputs:
       dockerfile_path:
-        description: 'Path to Dockerfile'
+        description: 'Path to Dockerfile (relative to root)'
         required: false
         default: 'Dockerfile'
       hadolint_version:
         description: 'Hadolint Docker image version'
         required: false
         default: 'latest'
+      fail_on_error:
+        description: 'Fail workflow if linting fails (true/false)'
+        required: false
+        default: 'true'
 
   push:
     paths:
@@ -22,17 +26,28 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
-    env:
-      DOCKERFILE_PATH: ${{ github.event.inputs.dockerfile_path || 'Dockerfile' }}
-      HADOLINT_VERSION: ${{ github.event.inputs.hadolint_version || 'latest' }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Run Hadolint via Docker
+      - name: Set environment variables
         run: |
-          docker run --rm -i \
-            -v "$PWD":/dockerfiles \
-            hadolint/hadolint:${HADOLINT_VERSION} \
-            hadolint /dockerfiles/${DOCKERFILE_PATH}
+          echo "DOCKERFILE_PATH=${{ github.event.inputs.dockerfile_path || 'Dockerfile' }}" >> $GITHUB_ENV
+          echo "HADOLINT_VERSION=${{ github.event.inputs.hadolint_version || 'latest' }}" >> $GITHUB_ENV
+          echo "FAIL_ON_ERROR=${{ github.event.inputs.fail_on_error || 'true' }}" >> $GITHUB_ENV
+
+      - name: Run Hadolint
+        run: |
+          echo "Linting $DOCKERFILE_PATH with Hadolint version $HADOLINT_VERSION"
+          if [ "$FAIL_ON_ERROR" = "true" ]; then
+            docker run --rm -i \
+              -v "$PWD":/dockerfiles \
+              hadolint/hadolint:$HADOLINT_VERSION \
+              hadolint /dockerfiles/$DOCKERFILE_PATH
+          else
+            docker run --rm -i \
+              -v "$PWD":/dockerfiles \
+              hadolint/hadolint:$HADOLINT_VERSION \
+              hadolint /dockerfiles/$DOCKERFILE_PATH || true
+          fi
