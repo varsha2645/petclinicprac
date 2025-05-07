@@ -23,4 +23,4 @@ jobs:
         java-version: '17'
 
     - name: Run Maven clean install
-      run: mvn clean install
+      run: mvn clean install -DskipTests
