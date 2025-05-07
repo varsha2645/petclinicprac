@@ -1,4 +1,4 @@
-name: Maven Build Clean
+name: Maven Build Cleans
 
 on:
   workflow_dispatch:        
