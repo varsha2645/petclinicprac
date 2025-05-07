@@ -1,0 +1,38 @@
+name: Parameterized Docker Linter
+
+on:
+  workflow_dispatch:
+    inputs:
+      dockerfile_path:
+        description: 'Path to Dockerfile'
+        required: false
+        default: 'Dockerfile'
+      hadolint_version:
+        description: 'Hadolint Docker image version'
+        required: false
+        default: 'latest'
+
+  push:
+    paths:
+      - '**/Dockerfile'
+  pull_request:
+    paths:
+      - '**/Dockerfile'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    env:
+      DOCKERFILE_PATH: ${{ github.event.inputs.dockerfile_path || 'Dockerfile' }}
+      HADOLINT_VERSION: ${{ github.event.inputs.hadolint_version || 'latest' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Run Hadolint via Docker
+        run: |
+          docker run --rm -i \
+            -v "$PWD":/dockerfiles \
+            hadolint/hadolint:${HADOLINT_VERSION} \
+            hadolint /dockerfiles/${DOCKERFILE_PATH}
