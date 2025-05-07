@@ -24,8 +24,3 @@ jobs:
 
     - name: Run Maven clean install
       run: mvn clean install
-
-
-
-    - name: Run Maven clean install
-      run: mvn clean install
