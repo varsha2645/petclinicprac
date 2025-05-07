@@ -1,4 +1,4 @@
-name: Parameterized Docker Linter
+name: Parameterized Docker Linters
 
 on:
   workflow_dispatch:
