@@ -1,4 +1,4 @@
-name: Maven Build install Clean
+name: Maven Build Clean
 
 on:
   workflow_run:
