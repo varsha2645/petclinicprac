@@ -14,12 +14,21 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v3
 
-    # -------- Docker Setup --------
-    - name: Build Docker Image
-      run: |
-        docker build -t my-app-image .
+    # -------- Java/Maven Build --------
+    - name: Set up Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
 
-    # -------- Node.js + Snyk Setup --------
+    - name: Build Java Project
+      run: mvn clean package -DskipTests
+
+    # -------- Docker Build --------
+    - name: Build Docker Image
+      run: docker build -t my-app-image .
+
+    # -------- Node.js + Snyk --------
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
@@ -35,10 +44,5 @@ jobs:
 
     - name: Monitor Docker Image in Snyk
       run: snyk monitor --docker my-app-image
-      env:
-        SNYK_TOKEN: ${{ secrets.SYNC }}
-
-    - name: Scan All Supported Projects
-      run: snyk test --all-projects || echo "All-project scan skipped (no supported files found)"
       env:
         SNYK_TOKEN: ${{ secrets.SYNC }}
