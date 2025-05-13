@@ -1,9 +1,9 @@
-name: Snyk Security Scan
+name: Snyk Scan All Projects
 
 on:
-  pull_request:
-    branches: [ main ]
   push:
+    branches: [ main ]
+  pull_request:
     branches: [ main ]
 
 jobs:
@@ -11,20 +11,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
+    - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Set up Node.js
+    - name: Set up Node.js (Snyk CLI requires Node)
       uses: actions/setup-node@v3
       with:
         node-version: '18'
 
-    - name: Install dependencies
-      run: npm install
+    - name: Install Snyk CLI
+      run: npm install -g snyk
 
-    - name: Run Snyk vulnerability scan
-      uses: snyk/actions/node@master
+    - name: Authenticate Snyk CLI
+      run: snyk auth ${{ secrets.SNYK }}
+
+    - name: Run Snyk to detect and test all project types
+      run: snyk test --all-projects --severity-threshold=medium
       env:
-        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      with:
-        args: test --all-projects --severity-threshold=high
+        SNYK_TOKEN: ${{ secrets.SNYK }}
+
+    - name: (Optional) Monitor for continuous Snyk monitoring
+      run: snyk monitor --all-projects
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK }}
