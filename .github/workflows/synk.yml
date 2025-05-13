@@ -14,16 +14,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # Java (Maven) Setup
-    - name: Set up Java
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'temurin'
-        java-version: '17'
-
-    - name: Build Java project
-      run: mvn clean install -DskipTests
-
     # Docker Build (for Dockerfile scanning)
     - name: Build Docker image
       run: docker build -t snyk-image .
