@@ -1,4 +1,4 @@
-name: Snyk Docker + Project Scan
+name: Snyk Docker + Project Scans
 
 on:
   push:
