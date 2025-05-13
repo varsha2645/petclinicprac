@@ -1,4 +1,4 @@
-name: Snyk Scan All Projects
+name: Snyk Scan All
 
 on:
   push:
@@ -14,7 +14,22 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Set up Node.js (for Snyk CLI)
+    # Java setup and build (for Maven)
+    - name: Set up Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Build Java project
+      run: mvn clean install -DskipTests
+
+    # Docker build (for Dockerfile scan)
+    - name: Build Docker image
+      run: docker build -t my-app:ci .
+
+    # Install Node.js (Snyk CLI needs Node)
+    - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
         node-version: '18'
@@ -22,12 +37,12 @@ jobs:
     - name: Install Snyk CLI
       run: npm install -g snyk
 
-    - name: Run Snyk to scan all project types
+    - name: Run Snyk CLI test
       run: snyk test --all-projects --severity-threshold=medium
       env:
         SNYK_TOKEN: ${{ secrets.SYNC }}
 
-    - name: (Optional) Monitor for ongoing Snyk monitoring
+    - name: (Optional) Monitor in Snyk dashboard
       run: snyk monitor --all-projects
       env:
         SNYK_TOKEN: ${{ secrets.SYNC }}
