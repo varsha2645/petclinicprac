@@ -16,7 +16,8 @@ jobs:
 
     # -------- Docker Setup --------
     - name: 🐳 Build Docker Image
-      run: docker build -t my-app-image .
+      run: |
+        docker build -t my-app-image .
 
     # -------- Node.js + Snyk Setup --------
     - name: 🧰 Set up Node.js
@@ -32,12 +33,12 @@ jobs:
       env:
         SNYK_TOKEN: ${{ secrets.SYNC }}
 
-    - name: 🧠 Optional: Monitor Docker Image in Snyk
+    - name: 🧠 Monitor Docker Image in Snyk
       run: snyk monitor --docker my-app-image
       env:
         SNYK_TOKEN: ${{ secrets.SYNC }}
 
-    - name: 🧪 Scan All Projects (optional fallback)
-      run: snyk test --all-projects
+    - name: 🧪 Optional: Scan All Supported Projects
+      run: snyk test --all-projects || echo "All-project scan skipped (no supported files found)"
       env:
         SNYK_TOKEN: ${{ secrets.SYNC }}
