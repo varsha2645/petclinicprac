@@ -32,11 +32,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Make mvnw executable
-        run: chmod +x mvnw
-
       - name: Install dependencies
-        run: ./mvnw install -DskipTests
+        run: mvn install -DskipTests
 
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/maven@master
