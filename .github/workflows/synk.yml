@@ -1,48 +1,41 @@
-name: Snyk Docker + Project Scans
+name: Snyk Security Scan
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
-  snyk-scan:
+  snyk:
+    name: Run Snyk to check for vulnerabilities
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    # -------- Java/Maven Build --------
-    - name: Set up Java
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'temurin'
-        java-version: '17'
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
 
-    - name: Build Java Project
-      run: mvn clean package -DskipTests
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
 
-    # -------- Docker Build --------
-    - name: Build Docker Image
-      run: docker build -t my-app-image .
+      - name: Install dependencies
+        run: ./mvnw install -DskipTests
 
-    # -------- Node.js + Snyk --------
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
-
-    - name: Install Snyk CLI
-      run: npm install -g snyk
-
-    - name: Scan Docker Image with Snyk
-      run: snyk test --docker my-app-image --severity-threshold=medium
-      env:
-        SNYK_TOKEN: ${{ secrets.SYNC }}
-
-    - name: Monitor Docker Image in Snyk
-      run: snyk monitor --docker my-app-image
-      env:
-        SNYK_TOKEN: ${{ secrets.SYNC }}
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/maven@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
