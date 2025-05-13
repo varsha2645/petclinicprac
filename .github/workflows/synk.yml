@@ -14,7 +14,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Set up Node.js (Snyk CLI requires Node)
+    - name: Set up Node.js (for Snyk CLI)
       uses: actions/setup-node@v3
       with:
         node-version: '18'
@@ -22,15 +22,12 @@ jobs:
     - name: Install Snyk CLI
       run: npm install -g snyk
 
-    - name: Authenticate Snyk CLI
-      run: snyk auth ${{ secrets.SNYK }}
-
-    - name: Run Snyk to detect and test all project types
+    - name: Run Snyk to scan all project types
       run: snyk test --all-projects --severity-threshold=medium
       env:
-        SNYK_TOKEN: ${{ secrets.SNYK }}
+        SNYK_TOKEN: ${{ secrets.SYNC }}
 
-    - name: (Optional) Monitor for continuous Snyk monitoring
+    - name: (Optional) Monitor for ongoing Snyk monitoring
       run: snyk monitor --all-projects
       env:
-        SNYK_TOKEN: ${{ secrets.SNYK }}
+        SNYK_TOKEN: ${{ secrets.SYNC }}
