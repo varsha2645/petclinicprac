@@ -1,4 +1,4 @@
-name: Snyk Scan All Projects
+name: Snyk Scan All Project
 
 on:
   push:
