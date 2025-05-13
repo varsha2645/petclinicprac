@@ -1,4 +1,4 @@
-name: Snyk Scan All Project
+name: Snyk Docker + Project Scan
 
 on:
   push:
@@ -7,37 +7,37 @@ on:
     branches: [ main ]
 
 jobs:
-  snyk:
+  snyk-scan:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    - name: 🛒 Checkout Code
       uses: actions/checkout@v3
 
-    # Docker Build (for Dockerfile scanning)
-    - name: Build Docker image
-      run: docker build -t snyk-image .
+    # -------- Docker Setup --------
+    - name: 🐳 Build Docker Image
+      run: docker build -t my-app-image .
 
-    # Snyk CLI Setup
-    - name: Set up Node.js
+    # -------- Node.js + Snyk Setup --------
+    - name: 🧰 Set up Node.js
       uses: actions/setup-node@v3
       with:
         node-version: '18'
 
-    - name: Install Snyk CLI
+    - name: 🔧 Install Snyk CLI
       run: npm install -g snyk
 
-    - name: Show what Snyk detects
-      run: snyk test --all-projects --print-deps
+    - name: 🔍 Scan Docker Image with Snyk
+      run: snyk test --docker my-app-image --severity-threshold=medium
       env:
         SNYK_TOKEN: ${{ secrets.SYNC }}
 
-    - name: Run Snyk test on all projects (with debug)
-      run: DEBUG=* snyk test --all-projects --severity-threshold=medium
+    - name: 🧠 Optional: Monitor Docker Image in Snyk
+      run: snyk monitor --docker my-app-image
       env:
         SNYK_TOKEN: ${{ secrets.SYNC }}
 
-    - name: Monitor (optional)
-      run: snyk monitor --all-projects
+    - name: 🧪 Scan All Projects (optional fallback)
+      run: snyk test --all-projects
       env:
         SNYK_TOKEN: ${{ secrets.SYNC }}
