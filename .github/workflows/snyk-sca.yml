@@ -1,0 +1,45 @@
+name: SCA Scan using Snyk
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  snyk-sca:
+    name: Snyk SCA Scan
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js (or change to your runtime)
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run Snyk to check for vulnerabilities
+      uses: snyk/actions/node@v1
+      with:
+        command: test
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+    # Optional: Upload Snyk test results as a SARIF file
+    - name: Run Snyk with SARIF output
+      uses: snyk/actions/node@v1
+      with:
+        command: test --sarif-file-output=snyk-results.sarif
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+    - name: Upload SARIF results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: snyk-results.sarif
