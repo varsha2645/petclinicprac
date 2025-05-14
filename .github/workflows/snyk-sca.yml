@@ -33,15 +33,15 @@ jobs:
     - name: Run Snyk test on the full project (Node.js and Maven)
       run: |
         echo "Running Snyk test on the entire project..."
-        snyk test --all-projects --json > snyk-output.json || echo "No vulnerabilities found."
+        snyk test --all-projects --json > snyk-output.json || echo "Snyk scan completed, but no vulnerabilities found."
 
     - name: Display Snyk Scan Results (with red for vulnerabilities)
       run: |
         echo "Snyk Scan Results:"
         if grep -q '"vulnerabilities":' snyk-output.json; then
+          # Display 'Vulnerabilities found' and the details in red
+          echo -e "\033[31mVulnerabilities found:\033[0m"  # Red color for the header
           jq '.vulnerabilities[] | "\(.moduleName) \(.title) Severity: \(.severity)"' snyk-output.json | awk '{print "\033[31m" $0 "\033[0m"}'  # Red color for vulnerabilities
         else
-          echo "No vulnerabilities found"
+          echo "No vulnerabilities found."
         fi
-
-    
