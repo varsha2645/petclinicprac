@@ -1,0 +1,11 @@
+name: Java CI Workflow
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  call-java-build-template:
+    uses: ./.github/workflows/buildjava.yml
