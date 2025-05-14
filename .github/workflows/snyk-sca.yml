@@ -1,5 +1,4 @@
-name: SCA Scan using Snyks
-
+name: SCA Scan using Snyk
 on:
   push:
     branches: [main]
