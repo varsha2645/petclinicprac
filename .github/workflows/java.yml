@@ -1,0 +1,53 @@
+name: Build Java Application
+
+on:
+  workflow_call:
+    inputs:
+      java-version:
+        required: true
+        type: string
+        default: '11'
+      maven-goals:
+        required: true
+        type: string
+        default: 'clean install'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the code
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Set up Java environment
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        java-version: ${{ inputs.java-version }}
+        distribution: 'adoptopenjdk'
+
+    # Cache Maven dependencies
+    - name: Cache Maven dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+
+    # Build with Maven
+    - name: Build with Maven
+      run: mvn ${{ inputs.maven-goals }} --no-transfer-progress
+
+    # (Optional) Run tests
+    - name: Run tests
+      run: mvn test
+
+    # (Optional) Upload build artifacts (JAR)
+    - name: Upload JAR artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: app.jar
+        path: target/*.jar
