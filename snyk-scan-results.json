@@ -1,0 +1,64 @@
+{
+  "vulnerabilities": [
+    {
+      "id": "SNYK-JS-LODASH-1018905",
+      "title": "Regular Expression Denial of Service (ReDoS)",
+      "severity": "medium",
+      "package": "lodash",
+      "version": "4.17.15",
+      "path": "lodash",
+      "introducedThrough": "lodash@4.17.15",
+      "fixedIn": "4.17.21",
+      "description": "The lodash package before 4.17.21 allows attackers to cause a denial of service (ReDoS) via a regular expression.",
+      "recommendation": "Upgrade lodash to version 4.17.21 or later"
+    },
+    {
+      "id": "SNYK-JS-LODASH-1040724",
+      "title": "Code Injection",
+      "severity": "high",
+      "package": "lodash",
+      "version": "4.17.15",
+      "path": "lodash",
+      "introducedThrough": "lodash@4.17.15",
+      "fixedIn": "4.17.21",
+      "description": "The lodash package before 4.17.21 allows attackers to inject arbitrary code.",
+      "recommendation": "Upgrade lodash to version 4.17.21 or later"
+    },
+    {
+      "id": "SNYK-JS-LODASH-567746",
+      "title": "Prototype Pollution",
+      "severity": "high",
+      "package": "lodash",
+      "version": "4.17.15",
+      "path": "lodash",
+      "introducedThrough": "lodash@4.17.15",
+      "fixedIn": "4.17.21",
+      "description": "The lodash package before 4.17.21 allows attackers to perform prototype pollution via a crafted object.",
+      "recommendation": "Upgrade lodash to version 4.17.21 or later"
+    },
+    {
+      "id": "SNYK-JS-LODASH-608086",
+      "title": "Prototype Pollution",
+      "severity": "high",
+      "package": "lodash",
+      "version": "4.17.15",
+      "path": "lodash",
+      "introducedThrough": "lodash@4.17.15",
+      "fixedIn": "4.17.21",
+      "description": "The lodash package before 4.17.21 allows attackers to perform prototype pollution via a crafted object.",
+      "recommendation": "Upgrade lodash to version 4.17.21 or later"
+    },
+    {
+      "id": "SNYK-JS-LODASH-6139239",
+      "title": "Prototype Pollution",
+      "severity": "high",
+      "package": "lodash",
+      "version": "4.17.15",
+      "path": "lodash",
+      "introducedThrough": "lodash@4.17.15",
+      "fixedIn": "4.17.21",
+      "description": "The lodash package before 4.17.21 allows attackers to perform prototype pollution via a crafted object.",
+      "recommendation": "Upgrade lodash to version 4.17.21 or later"
+    }
+  ]
+}
