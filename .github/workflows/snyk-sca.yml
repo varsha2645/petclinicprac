@@ -21,24 +21,6 @@ jobs:
       with:
         node-version: '18'
 
-    - name: Ensure package.json exists
-      run: |
-        if [ ! -f "package.json" ]; then
-          echo "No package.json found, creating a basic one for testing"
-          echo '{
-            "name": "snyk-test-project",
-            "version": "1.0.0",
-            "description": "Snyk test project",
-            "main": "index.js",
-            "scripts": {},
-            "author": "",
-            "license": "ISC",
-            "dependencies": {
-              "lodash": "4.17.15"
-            }
-          }' > package.json
-        fi
-
     - name: Install dependencies
       run: npm install
 
