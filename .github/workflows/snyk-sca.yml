@@ -1,4 +1,4 @@
-name: Snyk SCA Scan (Node.js)
+name: Snyk SCA Scana (Node.js)
 
 on:
   push:
