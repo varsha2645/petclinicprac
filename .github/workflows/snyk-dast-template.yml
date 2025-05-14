@@ -1,0 +1,45 @@
+name: Snyk DAST Scan Template
+
+on:
+  workflow_call:
+    inputs:
+      target-url:
+        description: 'The live URL of the application to scan'
+        required: true
+        type: string
+
+    secrets:
+      snyk-token:
+        required: true
+
+jobs:
+  snyk-dast:
+    name: Run Snyk DAST
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js (required for Snyk CLI)
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Snyk CLI
+        run: npm install -g snyk
+
+      - name: Authenticate with Snyk
+        run: snyk auth ${{ secrets.snyk-token }}
+
+      - name: Run Snyk DAST Scan
+        run: |
+          echo -e "\033[0;34m🔍 Starting Snyk DAST scan on ${{ inputs.target-url }}\033[0m"
+          snyk test --remote-repo-url="${{ inputs.target-url }}" || {
+            echo -e "\033[0;31m❌ Vulnerabilities found or scan failed.\033[0m"
+            exit 1
+          }
+
+      - name: ✅ Scan Completed
+        if: success()
+        run: echo -e "\033[0;32m✅ Snyk DAST scan completed successfully\033[0m"
