@@ -1,4 +1,4 @@
-name: Snyk SCA Scan (Node.js)
+name: Snyk SCA Scan (All package.json)
 
 on:
   push:
@@ -10,10 +10,10 @@ on:
 jobs:
   snyk-sca:
     runs-on: ubuntu-latest
-    name: Snyk SCA Scan
+    name: Scan all package.json files with Snyk
 
     steps:
-    - name: Checkout code
+    - name: Checkout repository
       uses: actions/checkout@v3
 
     - name: Set up Node.js
@@ -21,28 +21,33 @@ jobs:
       with:
         node-version: '18'
 
-    - name: Install dependencies
-      run: npm install
-
     - name: Install Snyk CLI
       run: npm install -g snyk
 
-    - name: Run Snyk test on all projects
-      id: snyk_test
+    - name: Scan all package.json files
       run: |
-        echo "Running Snyk test on all projects"
-        snyk test --all-projects --json > snyk-output.json || echo "Vulnerabilities found"
-        snyk test --all-projects --sarif > snyk.sarif || echo "Vulnerabilities found"
+        echo "[" > snyk-output.json
+        first=true
+        find . -type f -name "package.json" ! -path "*/node_modules/*" | while read file; do
+          echo "Scanning $file"
+          if [ "$first" = false ]; then
+            echo "," >> snyk-output.json
+          fi
+          snyk test --file="$file" --json || true >> snyk-output.json
+          first=false
+        done
+        echo "]" >> snyk-output.json
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       continue-on-error: true
 
-    - name: Display Snyk JSON Output
+    - name: Display Snyk JSON scan result
       run: |
-        echo "Snyk Scan Results:"
-        cat snyk-output.json || echo "No vulnerabilities found"
+        echo "Snyk JSON Output:"
+        cat snyk-output.json
 
-    - name: Upload SARIF report to GitHub
-      uses: github/codeql-action/upload-sarif@v3
+    - name: Upload scan output artifact
+      uses: actions/upload-artifact@v3
       with:
-        sarif_file: snyk.sarif
+        name: snyk-scan-results
+        path: snyk-output.json
