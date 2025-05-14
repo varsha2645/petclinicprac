@@ -11,7 +11,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -22,8 +22,9 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Build with Maven
-      run: mvn clean install --no-transfer-progress
-
-    - name: Run tests
-      run: mvn test
+    - name: Build and test with Maven (show red error on failure)
+      run: |
+        if ! mvn verify --no-transfer-progress; then
+          echo -e "\033[0;31m❌ Maven build or tests failed!\033[0m"
+          exit 1
+        fi
