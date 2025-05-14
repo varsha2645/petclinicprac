@@ -1,15 +1,22 @@
 {
-  "name": "snyk-test-project",
+  "name": "vulnerable-app",
   "version": "1.0.0",
-  "description": "A test Node.js project for Snyk SCA scanning",
+  "description": "A sample project with known vulnerabilities.",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "test": "echo \"No tests yet\" && exit 0"
+    "start": "node index.js"
   },
-  "author": "Test User",
-  "license": "MIT",
   "dependencies": {
-    "lodash": "4.17.15"
-  }
+    "lodash": "4.17.15",  // Vulnerable version (CVE-2021-23337)
+    "express": "4.17.1",  // A known vulnerable version (CVE-2019-10747)
+    "debug": "2.6.9"     // Vulnerable version
+  },
+  "devDependencies": {
+    "jest": "24.9.0"  // Older version with vulnerabilities
+  },
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "author": "Your Name",
+  "license": "ISC"
 }
