@@ -1,4 +1,4 @@
-name: Snyk Node.js Scan
+name: Snyk SCA Scan (Full Project Scan)
 
 on:
   push:
@@ -8,8 +8,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  snyk-node-scan:
+  snyk-sca:
     runs-on: ubuntu-latest
+    name: Snyk SCA Scan
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -19,25 +21,32 @@ jobs:
       with:
         node-version: '18'
 
-    - name: Install dependencies
+    - name: Install dependencies for Node.js
       run: npm install
 
     - name: Install Snyk CLI
-      run: npm install -g snyk
+      run: npm install -g snyk  # Install Snyk globally on the runner
 
-    - name: Run Snyk test on package.json
-      run: snyk test --file=package.json --json > snyk-output.json
-      env:
-        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      continue-on-error: true  # Continue even if vulnerabilities are found
-
-    - name: Show Snyk scan results
+    - name: Install Maven dependencies (if needed)
       run: |
-        echo "Snyk Scan Output:"
-        cat snyk-output.json
+        chmod +x ./mvnw  # Fix the 'Permission Denied' issue for mvnw
+        ./mvnw install  # Install the Maven dependencies
 
-    - name: Upload Snyk output as artifact
-      uses: actions/upload-artifact@v3
+    - name: Run Snyk test on the full project (Node.js and Maven)
+      run: |
+        echo "Running Snyk test on the entire project..."
+        snyk test --all-projects --json > snyk-output.json || echo "No vulnerabilities found."
+
+    - name: Display Snyk Scan Results (with red for vulnerabilities)
+      run: |
+        echo "Snyk Scan Results:"
+        if grep -q '"vulnerabilities":' snyk-output.json; then
+          jq '.vulnerabilities[] | "\(.moduleName) \(.title) Severity: \(.severity)"' snyk-output.json | awk '{print "\033[31m" $0 "\033[0m"}'  # Red color for vulnerabilities
+        else
+          echo "No vulnerabilities found"
+        fi
+
+    - name: Upload Snyk SARIF report to GitHub (optional, if you want SARIF format)
+      uses: github/codeql-action/upload-sarif@v3
       with:
-        name: snyk-scan-json
-        path: snyk-output.json
+        sarif_file: snyk.sarif  # Upload SARIF file if you have one
