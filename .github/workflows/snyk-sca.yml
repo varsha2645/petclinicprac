@@ -1,4 +1,4 @@
-name: Snyk SCA Scan(Full Project Scan)
+name: Snyk SCA Scan(Full Projectd Scan)
 
 on:
   push:
