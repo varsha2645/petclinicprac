@@ -8,4 +8,4 @@ on:
 
 jobs:
   call-java-build-template:
-    uses: ./.github/workflows/synk-sca.yml
+    uses: ./.github/workflows/buildjava.yml
