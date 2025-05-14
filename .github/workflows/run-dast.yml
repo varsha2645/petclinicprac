@@ -1,0 +1,12 @@
+name: Trigger Snyk DAST Scan
+
+on:
+  workflow_dispatch:  # manual trigger; can also use push/schedule/etc
+
+jobs:
+  call-snyk-dast:
+    uses: ./.github/workflows/snyk-dast-template.yml
+    with:
+      target-url: 'https://your-live-app-url.com'
+    secrets:
+      snyk-token: ${{ secrets.SNYK_TOKEN }}
