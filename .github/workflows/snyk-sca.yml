@@ -27,10 +27,8 @@ jobs:
     - name: Install Snyk CLI
       run: npm install -g snyk  # Install Snyk globally on the runner
 
-    - name: Install Maven dependencies (if needed)
-      run: |
-        chmod +x ./mvnw  # Fix the 'Permission Denied' issue for mvnw
-        ./mvnw install  # Install the Maven dependencies
+    - name: Install Maven
+      run: sudo apt-get install -y maven  # Install Maven globally
 
     - name: Run Snyk test on the full project (Node.js and Maven)
       run: |
